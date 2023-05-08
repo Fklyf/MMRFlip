@@ -2,6 +2,7 @@ import json
 import socket
 import random
 import time
+import threading
 
 ## Obtain friend from the after-life ##
 print("In Memory of an Exceptional Student and Programmer; ")
@@ -37,6 +38,8 @@ class Player:
         return self.games_won / total_games if total_games > 0 else 0
 
     def display_hud(self, opponent):
+            # Print separator line
+        print("-" * 60)
         print(f"{self.name}'s HUD:")
         print(f"MMR: {self.rating:.2f}")
         print(f"Games Won: {self.games_won}")
@@ -63,7 +66,7 @@ class Player:
 
             return player1, player2
 
-     # ELO
+    # ELO
 
 def get_rank(rating):
     if rating >= 0 and rating < 100:
@@ -159,8 +162,6 @@ def simulate_flips(player1_choice, player2_choice, num_flips):
     results = [play_game(player1_choice, player2_choice) for _ in range(num_flips)]
     return sum(r[0] for r in results), sum(r[1] for r in results)
 
-  ## HIDDEN
-
   ## GAME LOOP GAME LOOP (BREKABLE)
 
 def coin_flip():
@@ -183,6 +184,7 @@ def play_game(player1_choice, player2_choice, turn):
         player2.__dict__.update(data[player2.name])
 
  ## EVEN MORE LOGICAL BULLSHIT - GREAT
+ ## Return CMD commands
 
 def main_game_loop(player1, player2, file_name, data):
     data = load_game_data(file_name)
@@ -202,9 +204,10 @@ def main_game_loop(player1, player2, file_name, data):
         cmd = get_command(player1.name)
 
         if cmd == "quit":
-
             print("Thanks for playing!")
             break
+            # Print separator line
+            print("-" * 60)
 
         if cmd == "flip":
             # Print separator line
@@ -238,13 +241,21 @@ def main_game_loop(player1, player2, file_name, data):
         elif cmd == "hud":
             player1.display_hud(player2)
             player2.display_hud(player1)
+            # Print separator line
+            print("-" * 60)
             print(f"{player1.name}'s MMR: {player1.rating:.2f}, {player2.name}'s MMR: {player2.rating:.2f}")
+            # Print separator line
+            print("-" * 60)
 
         elif cmd == "tier":
             player1_rank = player1.get_rank()
             player2_rank = player2.get_rank()
+            # Print separator line
+            print("-" * 60)
             print(f"{player1.name}'s Tier: {player1_rank} ({player1.rating:.2f})")
             print(f"{player2.name}'s Tier: {player2_rank} ({player2.rating:.2f})")
+            # Print separator line
+            print("-" * 60)
 
         elif cmd == "reset":
             player1.rating = 1200
@@ -254,12 +265,13 @@ def main_game_loop(player1, player2, file_name, data):
             player2.games_won = 0
             player2.games_lost = 0
             print(f"{player1.name} and {player2.name} MMR and stats have been reset.")
-
-        elif cmd == "ver":
-            print("Version: 1.3 102")
+            # Print separator line
+            print("-" * 60)
 
         elif cmd == "quit":
             return False
+            # Print separator line
+            print("-" * 60)
 
         elif cmd == "flip" or cmd == "simulate":
             if cmd == "simulate":
@@ -287,7 +299,16 @@ def main_game_loop(player1, player2, file_name, data):
                     f"{player2.name}'s Result: {'Won' if player2_result else 'Lost'}, MMR Change: {mmr_gain2:+.2f}")
 
                 # Print separator line
-                print("-" * 70)
+                print("-" * 60)
+
+        ## Version
+
+        elif cmd == "ver":
+            # Print separator line
+            print("-" * 60)
+            print("Version: 1.3 103")
+            # Print separator line
+            print("-" * 60)
 
         # Add more commands here as needed
 
