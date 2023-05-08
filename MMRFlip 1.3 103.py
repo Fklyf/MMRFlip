@@ -2,7 +2,6 @@ import json
 import socket
 import random
 import time
-import threading
 
 ## Obtain friend from the after-life ##
 print("In Memory of an Exceptional Student and Programmer; ")
