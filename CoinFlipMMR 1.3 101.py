@@ -4,8 +4,8 @@ import random
 import time
 
 ## Obtain friend from the after-life ##
-print("In Memory of an Exceptional Student; ")
-
+print("In Memory of an Exceptional Student and Programmer; ")
+print("Welcome to MMRFlip Version 1.3")
 data = {}
 turn_counter = 0
 
@@ -58,31 +58,60 @@ class Player:
             saved_data_player1 = data.get(player1_name, None)
             saved_data_player2 = data.get(player2_name, None)
 
-            player1 = Player(player1_name, 1500, saved_data=saved_data_player1)
-            player2 = Player(player2_name, 1500, saved_data=saved_data_player2)
+            player1 = Player(player1_name, 1200, saved_data=saved_data_player1)
+            player2 = Player(player2_name, 1200, saved_data=saved_data_player2)
 
             return player1, player2
 
      # ELO
 
 def get_rank(rating):
-    # Define the ranking logic here
-    # For example, you can return ranking titles based on the rating value
-    if rating >= 3200:
-        return "Radiant"
-    elif rating >= 2800:
-        return "Immortal"
-    elif rating >= 2400:
-        return "Grandmaster"
-    elif rating >= 2000:
-        return "Master"
-    elif rating >= 1600:
-        return "Expert"
-    elif rating >= 1200:
-        return "Intermediate"
+    if rating >= 0 and rating < 100:
+        return 'Iron 1'
+    elif rating >= 100 and rating < 200:
+        return 'Iron 2'
+    elif rating >= 200 and rating < 300:
+        return 'Iron 3'
+    elif rating >= 300 and rating < 400:
+        return 'Bronze 1'
+    elif rating >= 400 and rating < 500:
+        return 'Bronze 2'
+    elif rating >= 500 and rating < 600:
+        return 'Bronze 3'
+    elif rating >= 600 and rating < 700:
+        return 'Silver 1'
+    elif rating >= 700 and rating < 800:
+        return 'Silver 2'
+    elif rating >= 800 and rating < 900:
+        return 'Silver 3'
+    elif rating >= 900 and rating < 1000:
+        return 'Gold 1'
+    elif rating >= 1000 and rating < 1100:
+        return 'Gold 2'
+    elif rating >= 1100 and rating < 1200:
+        return 'Gold 3'
+    elif rating >= 1200 and rating < 1300:
+        return 'Platinum 1'
+    elif rating >= 1300 and rating < 1400:
+        return 'Platinum 2'
+    elif rating >= 1400 and rating < 1500:
+        return 'Platinum 3'
+    elif rating >= 1500 and rating < 1600:
+        return 'Diamond 1'
+    elif rating >= 1600 and rating < 1700:
+        return 'Diamond 2'
+    elif rating >= 1700 and rating < 1800:
+        return 'Diamond 3'
+    elif rating >= 1800 and rating < 1900:
+        return 'Ascendant'
+    elif rating >= 1900 and rating < 2000:
+        return 'Immortal'
+    elif rating >= 2000 and rating < 2400:
+        return 'Radiant'
     else:
-        return "Novice"
+        return 'Invalid MMR'
 
+ ## Update elo
 def update_elo(player1, player2, result, k=64):
     expected1 = 1 / (1 + 10 ** ((player2.rating - player1.rating) / 400))
     expected2 = 1 / (1 + 10 ** ((player1.rating - player2.rating) / 400))
@@ -122,7 +151,7 @@ def save_game_data(file_name, data):
   ## GAME LOGIC (LOGICAL) LOGICNESS
 
 def get_command(player_name):
-    return input(f"{player_name}, enter a command (flip, tier, mmr, reset, quit): ").strip().lower()
+    return input(f"{player_name}, enter a command (flip, simulate, tier, hud, reset, quit): ").strip().lower()
 
  ## HIDDEN
 
@@ -178,6 +207,8 @@ def main_game_loop(player1, player2, file_name, data):
             break
 
         if cmd == "flip":
+            # Print separator line
+            print("-" * 60)
             if turn_counter % 2 == 1:
                 player1_choice, player2_choice = "Heads", "Tails"
             else:
@@ -196,12 +227,15 @@ def main_game_loop(player1, player2, file_name, data):
             print(
                 f"{player2.name}'s Result: {'Won' if player2_result else 'Lost'}, MMR Change: {mmr_gain2:+.2f}")
 
+            # Print separator line
+            print("-" * 60)
+
             # Save the updated data after the game
             data[player1.name] = player_data(player1)
             data[player2.name] = player_data(player2)
             save_game_data(file_name, data)
 
-        elif cmd == "mmr":
+        elif cmd == "hud":
             player1.display_hud(player2)
             player2.display_hud(player1)
             print(f"{player1.name}'s MMR: {player1.rating:.2f}, {player2.name}'s MMR: {player2.rating:.2f}")
@@ -213,24 +247,54 @@ def main_game_loop(player1, player2, file_name, data):
             print(f"{player2.name}'s Tier: {player2_rank} ({player2.rating:.2f})")
 
         elif cmd == "reset":
-            player1.rating = 1500
+            player1.rating = 1200
             player1.games_won = 0
             player1.games_lost = 0
-            player2.rating = 1500
+            player2.rating = 1200
             player2.games_won = 0
             player2.games_lost = 0
             print(f"{player1.name} and {player2.name} MMR and stats have been reset.")
 
         elif cmd == "ver":
-            print("Version: 1.3 101")
+            print("Version: 1.3 102")
 
         elif cmd == "quit":
             return False
+
+        elif cmd == "flip" or cmd == "simulate":
+            if cmd == "simulate":
+                num_simulations = int(input("Enter the number of games to simulate: "))
+            else:
+                num_simulations = 1
+
+            for _ in range(num_simulations):
+                if turn_counter % 2 == 1:
+                    player1_choice, player2_choice = "Heads", "Tails"
+                else:
+                    player1_choice, player2_choice = "Tails", "Heads"
+
+                player1_result, player2_result = play_game(player1_choice, player2_choice, turn_counter)
+                player1.update_results(player1_result)
+                player2.update_results(player2_result)
+                old_rating1, old_rating2 = player1.rating, player2.rating
+                new_ratings = update_elo(player1, player2, player1_result)
+                player1.rating = new_ratings[0]
+                player2.rating = new_ratings[1]
+                mmr_gain1, mmr_gain2 = player1.rating - old_rating1, player2.rating - old_rating2
+                print(
+                    f"{player1.name}'s Result: {'Won' if player1_result else 'Lost'}, MMR Change: {mmr_gain1:+.2f}")
+                print(
+                    f"{player2.name}'s Result: {'Won' if player2_result else 'Lost'}, MMR Change: {mmr_gain2:+.2f}")
+
+                # Print separator line
+                print("-" * 70)
+
         # Add more commands here as needed
 
+# file_name save/load
+# Load data from file_name
 file_name = "game_data.json"
 data = load_game_data(file_name)
-
 # Call create_players function to define player1 and player2
 player1, player2 = Player.create_players(file_name, data)
 
@@ -239,4 +303,4 @@ try:
 except KeyboardInterrupt:
     print("\nThanks for playing!")
 
-    ## GAME LOGIC OVER THANK F*** ##
+    ### END ###
