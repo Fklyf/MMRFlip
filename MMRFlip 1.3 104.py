@@ -114,7 +114,7 @@ def get_rank(rating):
         return 'Invalid MMR'
 
  ## Update elo
-def update_elo(player1, player2, result, k=64):
+def update_elo(player1, player2, result, k=128):
     expected1 = 1 / (1 + 10 ** ((player2.rating - player1.rating) / 400))
     expected2 = 1 / (1 + 10 ** ((player1.rating - player2.rating) / 400))
 
@@ -305,12 +305,46 @@ def main_game_loop(player1, player2, file_name, data):
         elif cmd == "ver":
             # Print separator line
             print("-" * 60)
-            print("Version: 1.3 103")
+            print("Version: 1.3 104")
             # Print separator line
             print("-" * 60)
 
         # Add more commands here as needed
+def menu():
+    while True:
+        print("1. Local Game")
+        print("2. Host Game")
+        print("3. Join Game")
+        print("4. Quit")
+        choice = input("Enter the number of your choice: ")
 
+        if choice == '1':
+            file_name = "game_data.json"
+            data = load_game_data(file_name)
+            player1, player2 = Player.create_players(file_name, data)
+
+            try:
+                main_game_loop(player1, player2, file_name, data)
+            except KeyboardInterrupt:
+                print("\nThanks for playing!")
+
+        elif choice == '2':
+            print("Hosting a game is not yet supported. Please try another option.")
+            continue
+
+        elif choice == '3':
+            print("Joining a game is not yet supported. Please try another option.")
+            continue
+
+        elif choice == '4':
+            print("Thanks for playing!")
+            break
+
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    menu()
 # file_name save/load
 # Load data from file_name
 file_name = "game_data.json"
